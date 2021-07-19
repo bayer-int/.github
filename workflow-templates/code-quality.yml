@@ -1,0 +1,28 @@
+# Check the quality of your code
+# Maintainer: Tim Jonas Meinerzhagen (GHXAX)
+
+name: Code Quality
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  codeclimate:
+    name: CodeClimate 
+    runs-on: self-hosted
+    env:
+      CODECLIMATE_VERSION: codeclimate/codeclimate@v0.85.23
+    steps:
+      - name: cleanup permissions #https://github.com/actions/checkout/issues/273
+        run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+      - uses: actions/checkout@v2
+      - uses: docker pull --quiet $CODECLIMATE_VERSION
+      - run: |
+         docker run \
+          --rm \
+          --env CODECLIMATE_CODE="$PWD" \
+          --volume "$PWD":/code \
+          --volume /var/run/docker.sock:/var/run/docker.sock \
+          --volume /tmp/cc:/tmp/cc \
+          $CODECLIMATE_VERSION analyze

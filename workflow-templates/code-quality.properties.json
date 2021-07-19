@@ -1,0 +1,8 @@
+{
+  "name": "Code Quality",
+  "description": "Get insights into the quality of your code",
+  "iconName": "code-quality",
+  "categories": [
+      "JavaScript", "TypeScript", "C++", "Java", "PHO", "C", "Python", "Go", "Ruby", "Kotlin", "HTML", "Objective-C", "Scala", "CSS"
+  ]
+}
