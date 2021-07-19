@@ -2,9 +2,9 @@
 
 Some helpful workflow templates for use with GitHub Actions. Make your life easier when starting out with Actions and reuse existing templates!
 
-## How to use in your organization
+## How to use
 
-Whenever you create a new GitHub Actions workflow through the "New Workflow" button on the "Actions" tab of your repository you will see the suggestions defined in this repository.
+Whenever you create a new GitHub Actions workflow through the "New Workflow" button on the "Actions" tab of your repository, you will see the suggestions defined in this repository.
 
 ## Available workflow templates
 
