@@ -10,7 +10,6 @@ Whenever you create a new GitHub Actions workflow through the "New Workflow" but
 
 | Name              | Type                   | Description                                                                                              |
 | ------------------|------------------------|----------------------------------------------------------------------------------------------------------|
-| SonarQube         | Code Quality, Security | Scan your code for quality and security vulnerabilities. Have all quality information in one place       |
 | Secret Scanning   | Security, Code Quality | Check your repository for unwanted secrets like passwords or API keys                                    |
 | CodeQuality       | Code Quality           | Get insights into the quality of your code                                                               |
 

@@ -1,8 +1,0 @@
-{
-    "name": "SonarQube",
-    "description": "Scan your code for quality and security vulnerabilities",
-    "iconName": "sonarqube",
-    "categories": [
-        "JavaScript", "TypeScript", "C++", "Java", "PHO", "C", "Python", "Go", "Ruby", "Kotlin", "HTML", "Objective-C", "Scala", "CSS"
-    ]
-}
