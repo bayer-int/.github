@@ -1,5 +1,4 @@
 # Check the quality of your code
-# Maintainer: Tim Jonas Meinerzhagen (GHXAX)
 
 name: Code Quality
 on:
