@@ -12,10 +12,10 @@ jobs:
     name: CodeClimate Scan
     runs-on: ubuntu-latest
     env:
-      CODECLIMATE_VERSION: codeclimate/codeclimate@v0.85.24
+      CODECLIMATE_VERSION: codeclimate/codeclimate:0.85.24
     steps:
       - uses: actions/checkout@v2
-      - uses: docker pull --quiet $CODECLIMATE_VERSION
+      - run: docker pull --quiet $CODECLIMATE_VERSION
       - run: |
          docker run \
           --rm \
