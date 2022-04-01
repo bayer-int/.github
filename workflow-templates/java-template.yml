@@ -1,0 +1,173 @@
+name: Java ci/cd base
+
+on:
+  push:
+    branches:
+      - main
+      
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: external-k8s
+    name: CI
+    steps:
+      ########## SETUP #############
+      # https://github.com/marketplace/actions/setup-java-jdk
+      - uses: actions/checkout@v2
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-openj9'
+          java-version: 8
+
+      ########## BUILD ##############
+
+      # Build with Maven
+      # https://github.com/marketplace/actions/setup-maven-action
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.3.1
+        with:
+          java-version: 8
+          maven-version: 3.8.4
+
+      - name: Build with Maven
+        run: mvn compile
+
+      # Build with Gradle
+      # https://github.com/marketplace/actions/gradle-build-action
+      - name: Setup and Build Gradle Action
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            build
+            -Partifactory_user=$GITHUB_COM_JAVABASE_DEMO_ARTIFACTORY_USER
+            -Partifactory_password=$GITHUB_COM_JAVABASE_DEMO_ARTIFACTORY_PASSWORD
+          gradle-version: 6.5
+
+      # ########## TEST ###############
+      - name: Run Tests mvn
+        # execute your tests generating test results
+        run: mvn -B test --file pom.xml
+
+      # Test with Junit
+      # https://github.com/marketplace/actions/junit-report-action
+      - name: Junit Test Report
+        uses: mikepenz/action-junit-report@v2
+        with:
+          token: ${{ github.token }}
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
+      # Test with Cucumber
+      # https://github.com/marketplace/actions/gherkin-linter
+      - name: Cucumber Test
+        uses: restqa/gherkin-linter-action@0.0.1
+        with:
+          path: 'build/test-results/test/'
+
+      # Selenium 
+      # https://github.com/Xotabu4/selenoid-github-action
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Start selenoid
+        uses: Xotabu4/selenoid-github-action@v2
+      - run: npm install && npm ci  
+      - name: Run tests
+        continue-on-error: true ## need to specify test
+        run: npm test
+
+      # ########## PUBLISH ############
+
+      # Publish to artifactory with Maven
+      # https://github.com/s4u/maven-settings-action
+      - name: maven-settings-xml-action
+        uses: s4u/maven-settings-action@v2.5.0
+        with: 
+          servers: |
+            [
+              { 
+                "id": "central", 
+                "username": "${{ secrets.ARTIFACTORY_USER }}", 
+                "password": "${{ secrets.ARTIFACTORY_PASSWORD }}"
+              }
+            ]
+      - name: Publish to Artifactory with maven
+        run: mvn deploy
+
+      # Publish to artifactory with gradle
+      # https://github.com/marketplace/actions/gradle-build-action
+      - name: Publish to Artifactory with gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            artifactoryPublish
+            -Partifactory_user=${{ secrets.ARTIFACTORY_USER }}
+            -Partifactory_password=${{ secrets.ARTIFACTORY_PASSWORD }}
+          gradle-version: 6.5
+          
+ ######### DEPLOY #############  
+  deploy:
+    runs-on: external-k8s
+    env:
+      working-directory: ./github-actions-with-aws-sam
+    steps:
+      
+      # SAM
+      # https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2 # v1.6.1
+        with:
+          aws-region:        eu-central-1
+          role-to-assume:    arn:aws:iam::297337656989:role/GitHubActions-JavaBase-role
+          role-session-name: GitHubActionsJavaBaseSecretManagerDemo
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.3.1
+        with:
+          java-version: 8
+          maven-version: 3.8.4
+      # sam build 
+      - name: Build sam
+        working-directory: ${{ env.working-directory }}
+        run: sam build
+
+      # sam deploy
+      - name: sam deploy
+        working-directory: ${{ env.working-directory }}
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name sam-hello-world --s3-bucket s3-java-sam-demo --capabilities CAPABILITY_IAM --region eu-central-1 
+
+      ########## SCAN #############
+  scan:
+    runs-on: external-k8s
+    name: Scan
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm install
+
+      # Snyk
+      # https://github.com/snyk/actions
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Veracode 
+      # https://github.com/marketplace/actions/veracode-upload-and-scan
+      - name: Veracode Upload And Scan
+        uses: veracode/veracode-uploadandscan-action@0.2.1
+        continue-on-error: true
+        with:
+          appname: 'JavaDemo'
+          createprofile: false
+          filepath: 'target/'
+          vid: '${{ secrets.VERACODE_API_ID }}'
+          vkey: '${{ secrets.VERACODE_API_KEY }}'
+

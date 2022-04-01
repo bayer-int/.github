@@ -1,0 +1,8 @@
+{
+    "name": "Java Template",
+    "description": "Java basic workflow for setup, build, publish and deploy. Demo project: https://github.com/bayer-int/java-base/",
+    "iconName": "java-template",
+    "categories": [
+        "Java", "Gradle", "Maven"
+    ]
+}
