@@ -8,10 +8,11 @@ Whenever you create a new GitHub Actions workflow through the "New Workflow" but
 
 ## Available workflow templates
 
-| Name              | Type                   | Description                                                                                              |
-| ------------------|------------------------|----------------------------------------------------------------------------------------------------------|
-| Secret Scanning   | Security, Code Quality | Check your repository for unwanted secrets like passwords or API keys                                    |
-| CodeQuality       | Code Quality           | Get insights into the quality of your code                                                               |
+| Name                      | Type                   | Description                                                                                              |
+| --------------------------|------------------------|----------------------------------------------------------------------------------------------------------|
+| Secret Scanning           | Security, Code Quality | Check your repository for unwanted secrets like passwords or API keys                                    |
+| CodeQuality               | Code Quality           | Get insights into the quality of your code                                                               |
+| Java workflow template    | Java                   | Java basic workflow for setup, build, publish and deploy.                                                |
 
 ## Contribution
 
