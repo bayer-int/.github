@@ -1,0 +1,12 @@
+name: MLR Automated Milestones
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  mlr-automated-milestones:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bayer-int/mlr-automated-milestones@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
