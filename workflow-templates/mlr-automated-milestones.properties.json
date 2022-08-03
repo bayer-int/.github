@@ -1,0 +1,8 @@
+{
+  "name": "MLR Automated Milestones",
+  "description": "Automated weekly milestones for your repository",
+  "iconName": "mlr-automated-milestones",
+  "categories": [
+      "JavaScript", "TypeScript", "C++", "Java", "PHO", "C", "Python", "Go", "Ruby", "Kotlin", "HTML", "Objective-C", "Scala", "CSS"
+  ]
+}
