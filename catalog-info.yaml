@@ -6,6 +6,6 @@ metadata:
   description: Templates for GitHub Actions
 
 spec:
-  type: website
+  type: library
   owner: devops-platforms
   lifecycle: production
