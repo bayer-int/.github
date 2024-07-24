@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  title: GitHub Actions Templates
+  name: .github
+  description: Templates for GitHub Actions
+
+spec:
+  type: website
+  owner: devops-platforms
+  lifecycle: production
